@@ -226,6 +226,8 @@ for agent_name in to_run_list:
     actions[agent_name] = runner.perform_simulations()
     done_flag[agent_name] = True
 
+#Creating graphs
+
 inst_regret, cum_regret, cum_regret_mean, cum_regret_std = {}, {}, {}, {}
 
 path = '/Users/uladzimircharniauski/Documents/AR_Bandits/DLB/results/test_' + str(config_id) + datetime.now().strftime(
