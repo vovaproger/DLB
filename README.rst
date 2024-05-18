@@ -4,7 +4,7 @@ DynLin-UCB
 
 Uladzimir Charniauski
 
-By Marco Mussi, Alberto Maria Metelli and Marcello Restelli
+Originated By Marco Mussi, Alberto Maria Metelli and Marcello Restelli
 
 Running Experiments
 ===================
