@@ -2,7 +2,9 @@
 DynLin-UCB
 **********
 
-Marco Mussi, Alberto Maria Metelli and Marcello Restelli
+Uladzimir Charniauski
+
+By Marco Mussi, Alberto Maria Metelli and Marcello Restelli
 
 Running Experiments
 ===================
@@ -32,7 +34,3 @@ If you are using this code for your scientific publications, please cite:
       publisher    = {{PMLR}},
       year         = {2023}
    }
-
-How to contact us
-=================
-For any question, drop an e-mail at marco.mussi@polimi.it
