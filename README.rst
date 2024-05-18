@@ -1,5 +1,5 @@
 **********
-DynLin-UCB
+State-Independent DynLin-UCB
 **********
 
 Uladzimir Charniauski
