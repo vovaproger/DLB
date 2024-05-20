@@ -1,3 +1,4 @@
+import os
 import sys
 import itertools
 import math
@@ -11,11 +12,11 @@ import tikzplotlib as tkz
 sys.path.append('.')
 
 from dynlinucb.core.display import system_info
-from dynlinucb.experimental.runner import Runner
+from dynlinucb.experimental.runner import StateIndepRunner
 from dynlinucb.experimental.agents import Exp3Agent, BatchExp3Agent, \
     LinUCBAgent, \
     DLinUCBAgent, DynLinUCBAgent, AR2Agent, ExpertAgent, LinearAgent
-from dynlinucb.experimental.environment import DynLinEnvironment
+from dynlinucb.experimental.environment import StateIndepDynLinEnvironment
 from dynlinucb.core.utils import spectr
 
 plt.rcParams.update(
@@ -70,6 +71,7 @@ A = np.array(param_dict['A'])
 B = np.array(param_dict['B'])
 C = np.array(param_dict['C'])
 D = np.array(param_dict['D'])
+G = np.array(param_dict['G'])
 
 max_daily_budget = param_dict['max_daily_budget']
 max_camp_budget = param_dict['max_camp_budget']
@@ -106,9 +108,11 @@ for pi in list(itertools.permutations(range(p))):
 discrete_actions = np.unique(np.array(ll), axis=0)
 n_arms = discrete_actions.shape[0]
 
+# actions_played = np.zeros((horizon, p)) # played actions
+
 # Optimal Action
 
-MARKOV = (D + C @ np.linalg.inv(np.eye(A.shape[0]) - A) @ B)
+MARKOV = (D + C @ np.linalg.inv(np.eye(A.shape[0]) - A) @ B) # rewrite markov (later)
 
 steadyvals = np.zeros(n_arms)
 for i, act_i in enumerate(discrete_actions):
@@ -162,6 +166,8 @@ batchexp3_lr = min(1, np.sqrt(n_arms * np.log(n_arms) / (
 batchexp3_M = (theta + ((omega * b_val) / (1 - spectral_rad_ub))) * u_val
 batchexp3_method = 'mean'  # 'mean' or 'sum'
 batchexp3_eta = batchexp3_lr / n_arms
+
+#Initializing agents
 
 to_run_list = [exp3, batchexp3, dynlinucblog, linucblog, dlinucblog, dynlinucb,
                linucb, dlinucb, ar2, expert]
@@ -220,18 +226,27 @@ for agent_name in to_run_list:
     else:
         raise ValueError(agent_name + ' algorithm still not exists!')
 
-    env = DynLinEnvironment(A, B, C, D, n, p, m, horizon, noise, out_noise, n_trials, output_mapping)
+    #env = DynLinEnvironment(A, B, C, D, n, p, m, horizon, noise, out_noise, n_trials, output_mapping)
+    env = StateIndepDynLinEnvironment(A, B, C, D, G, n, p, m, horizon, noise, out_noise, n_arms, n_trials, output_mapping) # new environment
     print('Running: ' + agent_name[1:])
-    runner = Runner(env, agent, n_trials, horizon, p, n_arms, discrete_actions)
+    #runner = Runner(env, agent, n_trials, horizon, p, n_arms, discrete_actions)
+    runner = StateIndepRunner(env, agent, n_trials, horizon, p, n_arms, discrete_actions)
     actions[agent_name] = runner.perform_simulations()
     done_flag[agent_name] = True
 
-#Creating graphs
+#Computing regrets and creating graphs 
 
 inst_regret, cum_regret, cum_regret_mean, cum_regret_std = {}, {}, {}, {}
 
-path = '/Users/uladzimircharniauski/Documents/AR_Bandits/DLB/results/test_' + str(config_id) + datetime.now().strftime(
-    '_%Y_%m_%d_%H_%M')
+path = f'/Users/uladzimircharniauski/Documents/AR_Bandits/DLB/results_exp/'
+
+try:
+        os.mkdir(path)
+        os.mkdir(path + 'txt/')
+        os.mkdir(path + 'jpg/')
+except:
+    pass
+    #raise NameError(f'Folder {path} already exists.')
 
 plt.figure(figsize=(16, 12))
 
@@ -280,5 +295,7 @@ plt.xlabel('Rounds')
 plt.xlim([0, horizon])
 plt.ylim(bottom=0, top=cum_regret_mean[dynlinucblog][-1] * 3)
 
-plt.savefig(path + '.jpg')
-tkz.save(path + '.tex')
+plt.savefig(path + f'jpg/test_{config_id}'+datetime.now().strftime(
+    '_%Y_%m_%d_%H_%M')+'.jpg')
+tkz.save(path + f'txt/test_{config_id}'+datetime.now().strftime(
+    '_%Y_%m_%d_%H_%M')+'.tex')

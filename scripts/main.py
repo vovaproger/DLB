@@ -1,4 +1,5 @@
 import sys
+import os
 import itertools
 import math
 import numpy as np
@@ -226,10 +227,19 @@ for agent_name in to_run_list:
     actions[agent_name] = runner.perform_simulations()
     done_flag[agent_name] = True
 
+#Generating regrets and creating graphs
+
 inst_regret, cum_regret, cum_regret_mean, cum_regret_std = {}, {}, {}, {}
 
-path = '/Users/uladzimircharniauski/Documents/AR_Bandits/DLB/results/test_' + str(config_id) + datetime.now().strftime(
-    '_%Y_%m_%d_%H_%M')
+path = f'/Users/uladzimircharniauski/Documents/AR_Bandits/DLB/results_exp/'
+
+try:
+        os.mkdir(path)
+        os.mkdir(path + 'txt/')
+        os.mkdir(path + 'jpg/')
+except:
+    pass
+    #raise NameError(f'Folder {path} already exists.')
 
 plt.figure(figsize=(16, 12))
 
@@ -278,5 +288,7 @@ plt.xlabel('Rounds')
 plt.xlim([0, horizon])
 plt.ylim(bottom=0, top=cum_regret_mean[dynlinucblog][-1] * 3)
 
-plt.savefig(path + '.jpg')
-tkz.save(path + '.tex')
+plt.savefig(path + f'jpg/test_{config_id}'+datetime.now().strftime(
+    '_%Y_%m_%d_%H_%M')+'.jpg')
+tkz.save(path + f'txt/test_{config_id}'+datetime.now().strftime(
+    '_%Y_%m_%d_%H_%M')+'.tex')
