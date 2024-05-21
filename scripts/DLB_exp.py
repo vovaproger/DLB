@@ -253,8 +253,8 @@ plt.figure(figsize=(16, 12))
 n_plt_samples = 200
 hq_plt_samples = 200
 split_at = 0.2
-assert horizon % 10000 == 0, \
-    'Horizon is valid for plot only if can be divided for 10000'
+# assert horizon % 10000 == 0, \
+#     'Horizon is valid for plot only if can be divided for 10000'
 
 indexer = np.concatenate((
     np.linspace(0, horizon * split_at, hq_plt_samples + 1).astype(int)[:-1],
@@ -293,9 +293,9 @@ plt.legend(loc='upper left')
 plt.ylabel('Cumulative Regret')
 plt.xlabel('Rounds')
 plt.xlim([0, horizon])
-plt.ylim(bottom=0, top=cum_regret_mean[dynlinucblog][-1] * 3)
+plt.ylim(bottom=0, top=2500) # cum_regret_mean[dynlinucblog][-1] * 3
 
-plt.savefig(path + f'jpg/test_{config_id}'+datetime.now().strftime(
+plt.savefig(path + f'jpg/test_{config_id}_exp'+datetime.now().strftime(
     '_%Y_%m_%d_%H_%M')+'.jpg')
-tkz.save(path + f'txt/test_{config_id}'+datetime.now().strftime(
+tkz.save(path + f'txt/test_{config_id}_exp'+datetime.now().strftime(
     '_%Y_%m_%d_%H_%M')+'.tex')

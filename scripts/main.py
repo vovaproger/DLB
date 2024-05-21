@@ -286,7 +286,7 @@ plt.legend(loc='upper left')
 plt.ylabel('Cumulative Regret')
 plt.xlabel('Rounds')
 plt.xlim([0, horizon])
-plt.ylim(bottom=0, top=cum_regret_mean[dynlinucblog][-1] * 3)
+plt.ylim(bottom=0, top=2500) # cum_regret_mean[dynlinucblog][-1] * 3
 
 plt.savefig(path + f'jpg/test_{config_id}'+datetime.now().strftime(
     '_%Y_%m_%d_%H_%M')+'.jpg')

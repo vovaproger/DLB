@@ -73,7 +73,7 @@
     "expert": [
         -1
     ],
-    "horizon": 1000000,
+    "horizon": 10000,  
     "n_trials": 10,
     "max_daily_budget": 1.5,
     "max_camp_budget": 1.0,

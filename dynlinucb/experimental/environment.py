@@ -89,18 +89,20 @@ class StateIndepDynLinEnvironment:
         h=np.zeros((self.horizon,self.p)) # Markov parameter matrix(something like this)
         a_s=np.zeros((self.horizon,self.n)) # Diagonal A-matrix values raised to a s-1 power.
 
-        index = actions_played.shape[0] # use it as H
+        H_index = len(actions_played) 
+
+        a_indices=np.arange(H_index)
+
+        a_s[1:H_index, :]=np.power(np.diagonal(self.a),a_indices[1:,None]-1)
+
+        h = (self.g @ a_s.T).T
 
         h[0, :]=np.diagonal(self.d) # remember that h{0}=theta
 
-        output = h[0, :] @ action # reward for h{0} and u_t
+        actions_played = actions_played[::-1]
 
-        for s in np.arange(1, index): 
-            a_s[s, :]=np.power(np.diagonal(self.a),s-1)
-            h[s, :]= self.g @ a_s[s, :]
-            output = output + h[s, :] @ actions_played[index-s, :]
-                
-        output =  output + self.out_noise[self.t, :].reshape(self.m, 1) 
+        output = np.sum(h * actions_played) + self.out_noise[self.t, :].reshape(self.m, 1) 
+
         self.state = self.a @ self.state + self.b @ action + \
             self.noise[self.t, :].reshape(self.n, 1)
         self.t = self.t + 1

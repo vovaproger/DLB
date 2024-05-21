@@ -78,7 +78,7 @@ class StateIndepRunner:
         action_vect = np.zeros((self.horizon, self.action_size)) 
         for t in range(self.horizon):
             action = self.agent.pull_arm() 
-            if isinstance(action, np.ndarray): # adding a played action into a matrix with observed actions to later use them in the environment
+            if isinstance(action, np.ndarray):
                 action_vect[t, :] = action.ravel()
             else:
                 action_vect[t, :] = self.actions[action, :]
